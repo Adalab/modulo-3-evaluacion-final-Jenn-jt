@@ -1,109 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate, NavLink } from 'react-router-dom';
-// services
-import GetApiData from '../services/GetApiData';
-import ls from '../services/local-storage';
-//components
-import CharacterList from './CharacterList';
-import Filter from './Filter';
-import CharacterDetails from './CharacterDetails';
-//style
-import '../styles/App.scss';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-function App() {
-  const usersLocalStorage = ls.get('users', []);
-  const [users, setUsers] = useState(usersLocalStorage);
-  const [filterName, setFilterName] = useState(ls.get('filterName', ''));
-  const [filterSpecies, setFilterSpecies] = useState(
-    ls.get('filterSpecies', '')
-  );
-  const [filterStatus, setFilterStatus] = useState(ls.get('filterStatus', ''));
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (users.length === 0) {
-      GetApiData().then((userData) => {
-        setUsers(userData);
-      });
-    }
-  }, [users.length]);
-
-  useEffect(() => {
-    ls.set('users', users);
-  }, [users]);
-
-  useEffect(() => {
-    ls.set('filterName', filterName);
-  }, [filterName]);
-
-  useEffect(() => {
-    ls.set('filterSpecies', filterSpecies);
-  }, [filterSpecies]);
-
-  useEffect(() => {
-    ls.set('filterStatus', filterStatus);
-  }, [filterStatus]);
-
-  const handleFilter = (data) => {
-    if (data.key === 'name') {
-      setFilterName(data.value);
-    } else if (data.key === 'species') {
-      setFilterSpecies(data.value);
-    } else if (data.key === 'status') {
-      setFilterStatus(data.value);
-    }
-  };
-
-  const filteredUsers = users
-    .filter((user) => {
-      return user.name.toLowerCase().includes(filterName.toLowerCase());
-    })
-    .filter((user) => {
-      return filterSpecies === '' ? true : user.species === filterSpecies;
-    })
-    .filter((user) => {
-      return filterStatus === '' ? true : user.status === filterStatus;
-    });
-
-  const renderCharacterDetail = (props) => {
-    const routeChId = parseInt(props.match.params.userId);
-    const foundCharacter = filteredUsers.find((user) => {
-      return user.id === routeChId;
-    });
-
-    if (foundCharacter !== undefined) {
-      return (
-        <div>
-          <NavLink to='/'>Volver</NavLink>
-          <CharacterDetails user={foundCharacter} />
-        </div>
-      );
+const CharacterDetails = (props) => {
+  console.log(props);
+  const setIcon = () => {
+    if (props.users[0].status === 'Dead') {
+      return 'fas fa-dizzy';
+    } else if (props.users[0].status === 'Alive') {
+      return 'fas fa-smile-wink';
     } else {
-      navigate('/', { replace: true });
-      return null;
+      return 'fas fa-question-circle';
     }
   };
-
   return (
-    <div className='App'>
-      <Routes>
-        <Route
-          path='/'
-          element={
-            <>
-              <Filter
-                handleFilter={handleFilter}
-                filterName={filterName}
-                filterSpecies={filterSpecies}
-              />
-              <CharacterList users={filteredUsers} />
-            </>
-          }
+    <div className='character__container'>
+      <article className='character__detail'>
+        <img
+          className='detail__img'
+          src={props.users[0].image}
+          alt={`Foto de ${props.users[0].name}`}
+          title={`Foto de ${props.users[0].name}`}
         />
-        <Route path='/:userId' element={renderCharacterDetail} />
-      </Routes>
+
+        <section className='card__description'>
+          <h4 className='card__titleD'>Name: {props.users[0].name}</h4>
+          <ul className='card__details'>
+            <li className='card__details--item'>
+              Species: {props.users[0].species}
+            </li>
+            <li className='card__details--item '>
+              Status: {props.users[0].status}
+              <i class={`${setIcon()}`}></i>
+            </li>
+            <li className='card__details--item'>
+              Origin: {props.users[0].origin}
+            </li>
+            <li className='card__details--item'>
+              Number of episodes: {props.users[0].episodes}
+            </li>
+          </ul>
+        </section>
+      </article>
+      <Link className='backToHomepage' to='/'>
+        Go back to the Homepage
+      </Link>
     </div>
   );
-}
+};
 
-export default App;
+CharacterDetails.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    image: PropTypes.string,
+    id: PropTypes.number,
+    episodes: PropTypes.number,
+    species: PropTypes.string,
+    status: PropTypes.string,
+  }),
+};
+export default CharacterDetails;

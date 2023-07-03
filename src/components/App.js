@@ -69,27 +69,6 @@ function App() {
       return filterStatus === '' ? true : user.status === filterStatus;
     });
 
-  const renderCharacterDetail = (props) => {
-    const routeChId = parseInt(props.match.params.userId);
-    const foundCharacter = users.find((user) => {
-      return user.id === routeChId;
-    });
-
-    if (foundCharacter !== undefined) {
-      return <CharacterDetails user={foundCharacter} />;
-    } else {
-      return (
-        <>
-          <div className='unfinded__container'>
-            <p className='unfinded__text'> Character not found, sorry.</p>
-            <NavLink className='unfinded__homepage' to='/'>
-              Go back to the Homepage
-            </NavLink>
-          </div>
-        </>
-      );
-    }
-  };
   return (
     <div className='App'>
       <div className='logo__container'>
@@ -117,12 +96,7 @@ function App() {
         />
         <Route
           path='/character/:userId'
-          element={
-            <CharacterDetails
-              renderCharacterDetail={renderCharacterDetail}
-              users={filteredUsers}
-            />
-          }
+          element={<CharacterDetails users={filteredUsers} />}
         />
       </Routes>
     </div>
