@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, NavLink, Route, Routes } from 'react-router-dom';
 // services
 import GetApiData from '../services/GetApiData';
 import ls from '../services/local-storage';
@@ -82,9 +82,9 @@ function App() {
         <>
           <div className='unfinded__container'>
             <p className='unfinded__text'> Character not found, sorry.</p>
-            <Link className='unfinded__homepage' to='/'>
+            <NavLink className='unfinded__homepage' to='/'>
               Go back to the Homepage
-            </Link>
+            </NavLink>
           </div>
         </>
       );
