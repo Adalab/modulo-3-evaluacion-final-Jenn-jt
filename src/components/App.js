@@ -118,7 +118,10 @@ function App() {
         <Route
           path='/character/:userId'
           element={
-            <renderCharacterDetail CharacterDetails={CharacterDetails} />
+            <CharacterDetails
+              renderCharacterDetail={renderCharacterDetail}
+              users={filteredUsers}
+            />
           }
         />
       </Routes>

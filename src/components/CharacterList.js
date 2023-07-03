@@ -16,7 +16,7 @@ const CharacterList = (props) => {
     return (
       <>
         <div className='warning__container'>
-          <p className='warning__text'> Damn! Character not found, sorry.</p>
+          <p className='warning__text'>Character not found, sorry.</p>
         </div>
       </>
     );
