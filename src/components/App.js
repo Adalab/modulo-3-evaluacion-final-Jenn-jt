@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Route, BrowserRouter } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, Route, Routes } from 'react-router-dom';
 // services
 import GetApiData from '../services/GetApiData';
 import ls from '../services/local-storage';
@@ -10,7 +10,7 @@ import CharacterDetails from './CharacterDetails';
 //style
 import '../styles/App.scss';
 
-const App = () => {
+function App() {
   const usersLocalStorage = ls.get('users', []); //el segundo parámetro corresponde a defaultData
   const [users, setUsers] = useState(usersLocalStorage);
   const [filterName, setFilterName] = useState(ls.get('filterName', '')); //string vacío hace que nos muestre todos los personajes.
@@ -81,7 +81,7 @@ const App = () => {
       return (
         <>
           <div className='unfinded__container'>
-            <p className='unfinded__text'> Damn! Character not found, sorry.</p>
+            <p className='unfinded__text'> Character not found, sorry.</p>
             <Link className='unfinded__homepage' to='/'>
               Go back to the Homepage
             </Link>
@@ -91,35 +91,39 @@ const App = () => {
     }
   };
   return (
-    <>
-      <div className='App'>
-        <div className='logo__container'>
-          <Link className='unfinded__homepage' to='/'>
-            <img
-              className='logo'
-              src='https://i.blogs.es/cfa26e/rickandmortycabecera/1366_2000.jpg'
-              alt='Logo Rick and Morty'
-            ></img>
-          </Link>
-        </div>
-        <BrowserRouter>
-          <Route exact path='/'>
-            <Filter
-              handleFilter={handleFilter}
-              filterName={filterName}
-              filterSpecies={filterSpecies}
-            />
-            <CharacterList users={filteredUsers} />
-          </Route>
-          <Route
-            exact
-            path='/character/:userId'
-            render={renderCharacterDetail}
-          />
-        </BrowserRouter>
+    <div className='App'>
+      <div className='logo__container'>
+        <Link className='unfinded__homepage' to='/'>
+          <img
+            className='logo'
+            src='https://www.vodafone.es/c/statics/imagen/img_OG_Rick_y_Morty_T4_V2.jpg'
+            alt='Logo Rick and Morty'
+          ></img>
+        </Link>
       </div>
-    </>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <>
+              <Filter
+                handleFilter={handleFilter}
+                filterName={filterName}
+                filterSpecies={filterSpecies}
+              />
+              <CharacterList users={filteredUsers} />{' '}
+            </>
+          }
+        />
+        <Route
+          path='/character/:userId'
+          element={
+            <renderCharacterDetail CharacterDetails={CharacterDetails} />
+          }
+        />
+      </Routes>
+    </div>
   );
-};
+}
 
 export default App;
